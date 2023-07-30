@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->float('price');
-            $table->float('originalPrice');
+            $table->float('originalPrice')->nullable()->default(0);
             $table->unsignedBigInteger('rootcategory_id')->nullable();
             $table->unsignedBigInteger('subcategory_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();

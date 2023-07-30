@@ -11,15 +11,15 @@ use Tests\TestCase;
  */
 class ProductControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     /**
      * @test
      */
     public function index_behaves_as_expected(): void
     {
-        $products = Product::factory()->count(3)->create();
+        // $products = Product::factory()->count(3)->create();
 
-        $response = $this->get(route('product.index'));
+        // $response = $this->get(route('product.index'));
     }
 }

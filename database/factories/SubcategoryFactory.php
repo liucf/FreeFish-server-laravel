@@ -23,7 +23,7 @@ class SubcategoryFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'thumb' => $this->faker->word,
+            'thumb' => $this->faker->imageUrl(),
             'rootcategory_id' => Rootcategory::factory(),
         ];
     }

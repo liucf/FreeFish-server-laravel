@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CrawlerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,4 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('crawler/category', [CrawlerController::class , 'category']);
 
+Route::get('crawler/computer', [CrawlerController::class , 'computer']);
