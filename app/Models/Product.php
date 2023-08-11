@@ -43,6 +43,8 @@ class Product extends Model
         'category_id' => 'integer',
     ];
 
+    protected $with = ['thumbs'];
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
@@ -76,5 +78,10 @@ class Product extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function order(): HasOne
+    {
+        return $this->hasOne(Order::class)->with('address');
     }
 }

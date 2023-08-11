@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -47,7 +48,7 @@ class Product extends Resource
             Text::make('Name')
             ->sortable()
             ->rules('required', 'max:255'),
-            Number::make('price'),
+            Currency::make('Price')->currency('NZD'),
             BelongsTo::make('Category')
         ];
     }

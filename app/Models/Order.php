@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Review extends Model
+class Order extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function author(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'author_id', 'id');
+    public function product() {
+        return $this->belongsTo(Product::class)->with('thumbs');
     }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+
 }

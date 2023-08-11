@@ -32,6 +32,7 @@ class SubcategoryController extends Controller
         
         return response()->json( 
             Product::with('thumbs:name')
+            ->where('status', 'active')
             ->where('subcategory_id' , Subcategory::where('name' , $name)->first()->id)
             ->orderBy( $sort , $order)
             ->paginate(12) 

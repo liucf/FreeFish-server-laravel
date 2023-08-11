@@ -22,3 +22,8 @@ Route::get('/', function () {
 Route::get('crawler/category', [CrawlerController::class , 'category']);
 
 Route::get('crawler/computer', [CrawlerController::class , 'computer']);
+
+Route::post('test', function () {
+    $fillInfo = request()->input('fillInfo');
+    dd($fillInfo);
+});
