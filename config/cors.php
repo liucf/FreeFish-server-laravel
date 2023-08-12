@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://free-fish-nuxt-3-58au0k88t-liucf.vercel.app'],
+    'allowed_origins' => ['http://localhost:3000', 'https://free-fish-nuxt-3-58au0k88t-liucf.vercel.app', 'https://www.youbaola.com'],
 
     'allowed_origins_patterns' => [],
 
