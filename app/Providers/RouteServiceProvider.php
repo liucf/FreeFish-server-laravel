@@ -17,8 +17,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = "http://localhost:3000";
-    // public const HOME = '/';
+    // public const HOME = env('NUXT_URL');
+    public const HOME = '/';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
