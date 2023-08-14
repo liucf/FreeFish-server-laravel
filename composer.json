@@ -17,7 +17,9 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "spatie/crawler": "^8.0",
-        "symfony/dom-crawler": "^6.3"
+        "symfony/dom-crawler": "^6.3",
+        "symfony/http-client": "^6.3",
+        "symfony/mailgun-mailer": "^6.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
