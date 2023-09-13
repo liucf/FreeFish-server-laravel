@@ -40,7 +40,13 @@ Route::post('/sanctum/token', function (Request $request) {
         // ]);
     }
 
-    return $user->createToken($request->device_name)->plainTextToken;
+    $user->tokens()->delete();
+    return response()->json(
+        [
+            'token' =>  $user->createToken($request->device_name)->plainTextToken
+        ],
+        200
+    );
 });
 
 
