@@ -34,6 +34,12 @@ Route::middleware('auth:sanctum')->put('/user', function (Request $request) {
 });
 Route::post('update-password', [UpdateUserPassword::class, 'update'])->middleware('auth:sanctum');
 Route::post('pay', [PaymentController::class, 'index']);
+
+Route::middleware('auth:sanctum')->post('payment_intent', [PaymentController::class, 'intent']);
+Route::middleware('auth:sanctum')->post('app_buy', [PaymentController::class, 'app_buy']);
+
+
+
 Route::middleware('auth:sanctum')->get('/orders', function (Request $request) {
     return $request->user()->orders->load('product');
 });
@@ -56,10 +62,12 @@ Route::get('product/trending', [ProductController::class, 'trending']);
 Route::get('product/show/{name}', [ProductController::class, 'show']);
 Route::get('product/byid/{product}', [ProductController::class, 'showbyid']);
 Route::get('product/related/{name}', [ProductController::class, 'related']);
+Route::get('product/search', [ProductController::class, 'search']);
 
 
 Route::get('subcategory/featured', [SubcategoryController::class, 'featured']);
 Route::get('subcategory/show/{name}', [SubcategoryController::class, 'show']);
+Route::get('subcategory/byid/{id}', [SubcategoryController::class, 'showbyid']);
 Route::get('category', [CategoryController::class, 'index']);
 
 Route::get('review/byuser/{id}', [ReviewController::class, 'byuser']);
@@ -68,4 +76,4 @@ Route::post('delivery', [OrderController::class, 'delivery']);
 Route::post('confirm', [OrderController::class, 'confirm']);
 Route::post('review', [OrderController::class, 'review']);
 
-Route::post('sell', [ProductController::class, 'sell']);
+Route::middleware('auth:sanctum')->post('sell', [ProductController::class, 'sell']);

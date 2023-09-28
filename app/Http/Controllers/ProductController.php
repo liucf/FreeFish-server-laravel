@@ -16,7 +16,8 @@ class ProductController extends Controller
 
     public function trending(Request $request): JsonResponse
     {
-        return response()->json(Product::with('thumbs:name')->where('status', 'active')->latest()->limit(8)->get());
+        // return response()->json(Product::with('thumbs:name')->where('status', 'active')->latest()->limit(8)->get());
+        return response()->json(Product::with('thumbs:name')->where('status', 'active')->inRandomOrder()->limit(8)->get());
     }
 
     public function show(String $name): JsonResponse
@@ -35,26 +36,41 @@ class ProductController extends Controller
         return response()->json(Product::with('thumbs:name')->where('subcategory_id', $subcategory)->inRandomOrder()->limit(4)->get());
     }
 
+    public function search(): JsonResponse
+    {
+        $query = request('query');
+        return response()->json(Product::with('thumbs:name')->where('name', 'like', '%' . $query . '%')->where('status', 'active')->inRandomOrder()->limit(20)->get());
+    }
+
     public function sell(Request $request): JsonResponse
     {
         try {
+            logger()->info('hi');
             $user = request()->user();
-            // logger()->info($request->all());
+            logger()->info($user->id);
+            logger()->info($request->all());
+
 
             $product = Product::create([
                 'user_id' => $user->id,
                 'name' => $request->name,
                 'description' => $request->description,
-                'price' => $request->price,
-                'rootcategory_id' => $request->rootcategory,
-                'subcategory_id' => $request->subcategory,
+                'price' => (float)$request->price,
+                'rootcategory_id' => (int)$request->rootcategory,
+                'subcategory_id' => (int)$request->subcategory,
                 'status' => 'active',
             ]);
 
-            // logger()->info($product);
+            logger()->info($product);
 
-            $fileName = Str::slug($request->name, '-') . '-' . time() . '.' . $request->image->getClientOriginalExtension();
+            if ($request->has('imageName')) {
+                $fileName = $request->imageName . '-' . time() . '.' . $request->imageExtension;
+                // file_put_contents(storage_path('app/public/product/') . $fileName, $request->image);
+            } else {
+                $fileName = Str::slug($request->name, '-') . '-' . time() . '.' . $request->image->getClientOriginalExtension();
+            }
             $request->image->move(storage_path('app/public/product/'), $fileName);
+
 
             // logger()->info($fileName);
 
