@@ -105,6 +105,7 @@ class PaymentController extends Controller
                 'zip' => 'App User-Check address',
                 'address' => $address,
             ];
+            logger($addressInsert);
             $address = $user->addresses()->create($addressInsert);
             // Add order to database
 
