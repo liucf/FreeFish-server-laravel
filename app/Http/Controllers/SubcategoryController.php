@@ -14,11 +14,23 @@ use Illuminate\Http\Request;
 class SubcategoryController extends Controller
 {
 
+    /**
+     * Get the featured subcategories with their root categories.
+     *
+     * @param  Request  $request
+     * @return JsonResponse
+     */
     public function featured(Request $request): JsonResponse
     {
         return response()->json(Subcategory::with('rootcategory:id,name')->limit(6)->get());
     }
 
+    /**
+     * Show the products with the given subcategory name.
+     *
+     * @param string $name
+     * @return JsonResponse
+     */
     public function show(String $name): JsonResponse
     {
         $sort = request()->query('sort');

@@ -43,6 +43,16 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Confirms an order and updates the necessary information.
+     *
+     * This method retrieves the authenticated user, the order ID from the request input,
+     * and finds the corresponding order in the database. It then updates the order's
+     * "is_confirmed" flag to true and sets the status to "delivered". Additionally,
+     * it updates the seller's balance by adding the order amount to their current balance.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function confirm()
     {
         $user = request()->user();
@@ -62,6 +72,11 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Review the order and update the necessary information.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function review()
     {
         $user = request()->user();

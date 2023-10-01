@@ -15,39 +15,80 @@ use Illuminate\Support\Str;
  */
 class ProductController extends Controller
 {
+    /**
+     * Retrieve the index of products with their associated thumbnails.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function index(Request $request): JsonResponse
     {
         return response()->json(Product::with('thumbs:name')->latest()->get());
     }
 
+    /**
+     * Get the trending products.
+     *
+     * @param  Request  $request
+     * @return JsonResponse
+     */
     public function trending(Request $request): JsonResponse
     {
         // return response()->json(Product::with('thumbs:name')->where('status', 'active')->latest()->limit(8)->get());
         return response()->json(Product::with('thumbs:name')->where('status', 'active')->inRandomOrder()->limit(8)->get());
     }
 
+    /**
+     * Show the details of a product.
+     *
+     * @param string $name
+     * @return JsonResponse
+     */
     public function show(String $name): JsonResponse
     {
         return response()->json(Product::with(['thumbs:name', 'user:id,name,rating,rating'])->where('name', $name)->first());
     }
 
+    /**
+     * Retrieve the details of a product by its ID and return a JSON response.
+     *
+     * @param  Product  $product
+     * @return JsonResponse
+     */
     public function showbyid(Product $product): JsonResponse
     {
         return response()->json($product->load(['thumbs:name', 'user:id,name,rating', 'order']));
     }
 
+    /**
+     * Get related products based on the given product name.
+     *
+     * @param string $name
+     * @return JsonResponse
+     */
     public function related(String $name): JsonResponse
     {
         $subcategory = Product::where('name', $name)->first()->subcategory_id;
         return response()->json(Product::with('thumbs:name')->where('subcategory_id', $subcategory)->inRandomOrder()->limit(4)->get());
     }
 
+    /**
+     * Search for products based on the given query.
+     *
+     * @return JsonResponse
+     */
     public function search(): JsonResponse
     {
         $query = request('query');
         return response()->json(Product::with('thumbs:name')->where('name', 'like', '%' . $query . '%')->where('status', 'active')->inRandomOrder()->limit(20)->get());
     }
 
+    /**
+     * Sell a product based on the given request.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function sell(Request $request): JsonResponse
     {
         try {

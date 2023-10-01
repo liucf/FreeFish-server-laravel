@@ -71,6 +71,12 @@ class ReviewController extends Controller
         //
     }
 
+    /**
+     * Retrieve reviews by user ID.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function byuser($id)
     {
         return response()->json(Review::with('author:id,name')->where('seller_id', $id)->latest()->get());

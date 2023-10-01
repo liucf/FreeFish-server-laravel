@@ -20,6 +20,16 @@ use Illuminate\Http\Request;
 class PaymentController extends Controller
 {
 
+    /**
+     * Handle the index request.
+     *
+     * This method retrieves the user, payment method ID, amount, product ID, and fill info from the request.
+     * It then attempts to charge the user using the retrieved information.
+     * If the charge is successful, it returns a JSON response with success status and the charge data.
+     * If an exception occurs during the process, it returns a JSON response with failure status and the exception message.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         try {
@@ -80,6 +90,11 @@ class PaymentController extends Controller
         }
     }
 
+    /**
+     * Process the payment intent and return the client secret.
+     *
+     * @return string
+     */
     public function intent()
     {
         $payment = request()->user()->pay(
@@ -89,6 +104,11 @@ class PaymentController extends Controller
         return $payment->client_secret;
     }
 
+    /**
+     * Handles the purchase of a product in the app.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function app_buy()
     {
 
