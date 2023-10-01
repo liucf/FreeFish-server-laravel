@@ -24,22 +24,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// get user information
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return new UserResource($request->user());
 });
+
+
+// update user information
 Route::middleware('auth:sanctum')->put('/user', function (Request $request) {
     $request->user()->update($request->only('name'));
     $request->user()->fresh();
     return new UserResource($request->user());
 });
-Route::post('update-password', [UpdateUserPassword::class, 'update'])->middleware('auth:sanctum');
-Route::post('pay', [PaymentController::class, 'index']);
 
+// update password
+Route::post('update-password', [UpdateUserPassword::class, 'update'])->middleware('auth:sanctum');
+
+
+// payment
 Route::middleware('auth:sanctum')->post('payment_intent', [PaymentController::class, 'intent']);
 Route::middleware('auth:sanctum')->post('app_buy', [PaymentController::class, 'app_buy']);
+Route::post('pay', [PaymentController::class, 'index']);
 
-
-
+// orders
 Route::middleware('auth:sanctum')->get('/orders', function (Request $request) {
     return $request->user()->orders->load('product');
 });
@@ -57,6 +64,7 @@ Route::middleware('auth:sanctum')->get('/order/byproduct/{id}', function (Reques
     return Order::where('product_id', $request->id)->first();
 });
 
+// product
 Route::get('product', [ProductController::class, 'index']);
 Route::get('product/trending', [ProductController::class, 'trending']);
 Route::get('product/show/{name}', [ProductController::class, 'show']);

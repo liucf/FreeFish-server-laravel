@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 
+/**
+ * Controller class for managing subcategories.
+ */
 class SubcategoryController extends Controller
 {
 

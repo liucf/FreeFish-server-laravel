@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Browsershot\Browsershot;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Controller method for crawling from trademe.com and storing  data.
+ *
+ * @return void
+ */
 class CrawlerController extends Controller
 {
     public function category()
@@ -24,7 +29,7 @@ class CrawlerController extends Controller
         //     ->executeJavaScript()
         //     ->setCrawlObserver(new CategoryCrawlObserver)
         //     ->startCrawling($url);
-        
+
         // $browsershot = new \Spatie\Browsershot\Browsershot();
         // $browsershot->setNodeBinary('/Users/michael/.nvm/versions/node/v18.16.1/bin/node');
         // $browsershot->setNpmBinary('/Users/michael/.nvm/versions/node/v18.16.1/bin/npm');
@@ -36,8 +41,8 @@ class CrawlerController extends Controller
         $table = $crawler->filter('#fullCat');
         $table->filter('div.category')->each(function (Crawler $node, $i) {
             $categoryname = $node->filter('h3')->text();
-           
-            if($categoryname != "Computers"){
+
+            if ($categoryname != "Computers") {
                 return false;
             }
 
@@ -83,14 +88,13 @@ class CrawlerController extends Controller
                         $productname = $node->filter('#-title')->text();
                     } catch (\Throwable $th) {
                         try {
-                        $productname = $node->filter('.tm-marketplace-search-card__title')->text();
-                        }
-                        catch (\Throwable $th) {
+                            $productname = $node->filter('.tm-marketplace-search-card__title')->text();
+                        } catch (\Throwable $th) {
                             $productname = "none";
                         }
                     }
 
-                    if( Product::where('name', $productname)->exists()){
+                    if (Product::where('name', $productname)->exists()) {
                         return false;
                     }
 
@@ -124,11 +128,11 @@ class CrawlerController extends Controller
                     $product = Product::updateOrCreate(
                         [
                             'user_id' => 1,
-                            'name' => $productname, 
+                            'name' => $productname,
                             'rootcategory_id' => $root->id,
                             'subcategory_id' => $subcategory->id,
-                            'category_id' => $category->id, 
-                            'price' => (float)$productPrice, 
+                            'category_id' => $category->id,
+                            'price' => (float)$productPrice,
                             'description' => $productDesc,
                             'originalPrice' => $productPrice * 0.5
                         ],
@@ -136,10 +140,10 @@ class CrawlerController extends Controller
 
                     // download the pictures
                     $productImg = $crawler4->filter('.tm-marketplace-listing-photos__aspect-ratio');
-                    if($productImg->count() > 0){
+                    if ($productImg->count() > 0) {
                         $imgWrap = $productImg->attr('style');
                         preg_match('/.*url\("((.*\/)(.*))"\);/', $imgWrap, $matches);
-                        $imgUrl = $matches[1]; 
+                        $imgUrl = $matches[1];
                         $imgName = $matches[3];
                         logger($imgUrl);
                         logger($imgName);
@@ -149,10 +153,9 @@ class CrawlerController extends Controller
                             'name' => $imgName
                         ]);
                     }
-                
                 });
-                  
-                if(!$thirdCategoryExist) {
+
+                if (!$thirdCategoryExist) {
                     // downlaod one product from subcategory
                     logger("download one product from subcategory");
 
@@ -160,15 +163,13 @@ class CrawlerController extends Controller
                         $productname = $crawler2->filter('#-title')->text();
                     } catch (\Throwable $th) {
                         try {
-                        $productname = $crawler2->filter('.tm-marketplace-search-card__title')->text();
-
-                        }
-                        catch (\Throwable $th) {
+                            $productname = $crawler2->filter('.tm-marketplace-search-card__title')->text();
+                        } catch (\Throwable $th) {
                             $productname = "none";
                         }
                     }
 
-                    if( Product::where('name', $productname)->exists()){
+                    if (Product::where('name', $productname)->exists()) {
                         return false;
                     }
 
@@ -198,10 +199,10 @@ class CrawlerController extends Controller
                     $product = Product::updateOrCreate(
                         [
                             'user_id' => 1,
-                            'name' => $productname, 
+                            'name' => $productname,
                             'rootcategory_id' => $root->id,
                             'subcategory_id' => $subcategory->id,
-                            'price' => (float)$productPrice, 
+                            'price' => (float)$productPrice,
                             'description' => $productDesc,
                             'originalPrice' => $productPrice * 0.5
                         ],
@@ -209,10 +210,10 @@ class CrawlerController extends Controller
 
                     // download the pictures
                     $productImg = $crawler4->filter('.tm-marketplace-listing-photos__aspect-ratio');
-                    if($productImg->count() > 0){
-                    $imgWrap = $productImg->attr('style');
+                    if ($productImg->count() > 0) {
+                        $imgWrap = $productImg->attr('style');
                         preg_match('/.*url\("((.*\/)(.*))"\);/', $imgWrap, $matches);
-                        $imgUrl = $matches[1]; 
+                        $imgUrl = $matches[1];
                         $imgName = $matches[3];
                         logger($imgUrl);
                         logger($imgName);
@@ -230,20 +231,20 @@ class CrawlerController extends Controller
     public function computer()
     {
         $url = 'https://www.trademe.co.nz/browse';
-        
+
         $html = Browsershot::url("https://www.trademe.co.nz/browse")->timeout(1200000)->newHeadless()->bodyHtml();
         $crawler = new Crawler($html);
 
         $table = $crawler->filter('#fullCat');
         $table->filter('div.category')->each(function (Crawler $node, $i) {
             $categoryname = $node->filter('h3')->text();
-           
-            if($categoryname != "Computers"){
+
+            if ($categoryname != "Computers") {
                 return false;
             }
 
             logger($categoryname);
-            
+
             $root = Rootcategory::updateOrCreate(
                 ['name' => $categoryname]
             );
@@ -253,7 +254,7 @@ class CrawlerController extends Controller
                 logger($subcategoryname);
                 logger($subcategoryurl);
 
-                if($subcategoryname!="Monitors"){
+                if ($subcategoryname != "Monitors") {
                     return false;
                 }
 
@@ -287,18 +288,17 @@ class CrawlerController extends Controller
                             $productname = $node4->filter('#-title')->text();
                         } catch (\Throwable $th) {
                             try {
-                            $productname = $node4->filter('.tm-marketplace-search-card__title')->text();
-                            }
-                            catch (\Throwable $th) {
+                                $productname = $node4->filter('.tm-marketplace-search-card__title')->text();
+                            } catch (\Throwable $th) {
                                 $productname = "none";
                             }
                         }
-    
-                        if( Product::where('name', $productname)->exists()){
+
+                        if (Product::where('name', $productname)->exists()) {
                             return false;
                         }
-    
-                       
+
+
                         try {
                             $productPrice = $node4->filter('.tm-marketplace-search-card__price')->text();
                         } catch (\Throwable $th) {
@@ -308,37 +308,37 @@ class CrawlerController extends Controller
                         logger($productname);
                         logger($producturl);
                         logger($productPrice);
-    
+
                         $html5 = Browsershot::url($producturl)->timeout(1200000)->newHeadless()->bodyHtml();
                         $crawler5 = new Crawler($html5);
                         $productDesc = $crawler5->filter('.tm-markdown')->text();
                         logger($productDesc);
-    
+
                         $productPrice = str_replace(',', '', $productPrice);
                         $productPrice = str_replace('$', '', $productPrice);
                         $productPrice = str_replace(' ', '', $productPrice);
                         $productPrice = (float)$productPrice;
                         logger($productDesc);
-    
+
                         $product = Product::updateOrCreate(
                             [
                                 'user_id' => 1,
-                                'name' => $productname, 
+                                'name' => $productname,
                                 'rootcategory_id' => $root->id,
                                 'subcategory_id' => $subcategory->id,
-                                'category_id' => $category->id, 
-                                'price' => (float)$productPrice, 
+                                'category_id' => $category->id,
+                                'price' => (float)$productPrice,
                                 'description' => $productDesc,
                                 'originalPrice' => $productPrice * 0.5
                             ],
                         );
-    
+
                         // download the pictures
                         $productImg = $crawler5->filter('.tm-marketplace-listing-photos__aspect-ratio');
-                        if($productImg->count() > 0){
+                        if ($productImg->count() > 0) {
                             $imgWrap = $productImg->attr('style');
                             preg_match('/.*url\("((.*\/)(.*))"\);/', $imgWrap, $matches);
-                            $imgUrl = $matches[1]; 
+                            $imgUrl = $matches[1];
                             $imgName = $matches[3];
                             logger($imgUrl);
                             logger($imgName);
@@ -348,12 +348,10 @@ class CrawlerController extends Controller
                                 'name' => $imgName
                             ]);
                         }
-                    
                     });
-                   
                 });
-                  
-                if(!$thirdCategoryExist) {
+
+                if (!$thirdCategoryExist) {
                     // downlaod one product from subcategory
                     logger("download one product from subcategory");
                     return false;
@@ -361,15 +359,13 @@ class CrawlerController extends Controller
                         $productname = $crawler2->filter('#-title')->text();
                     } catch (\Throwable $th) {
                         try {
-                        $productname = $crawler2->filter('.tm-marketplace-search-card__title')->text();
-
-                        }
-                        catch (\Throwable $th) {
+                            $productname = $crawler2->filter('.tm-marketplace-search-card__title')->text();
+                        } catch (\Throwable $th) {
                             $productname = "none";
                         }
                     }
 
-                    if( Product::where('name', $productname)->exists()){
+                    if (Product::where('name', $productname)->exists()) {
                         return false;
                     }
 
@@ -399,10 +395,10 @@ class CrawlerController extends Controller
                     $product = Product::updateOrCreate(
                         [
                             'user_id' => 1,
-                            'name' => $productname, 
+                            'name' => $productname,
                             'rootcategory_id' => $root->id,
                             'subcategory_id' => $subcategory->id,
-                            'price' => (float)$productPrice, 
+                            'price' => (float)$productPrice,
                             'description' => $productDesc,
                             'originalPrice' => $productPrice * 0.5
                         ],
@@ -410,10 +406,10 @@ class CrawlerController extends Controller
 
                     // download the pictures
                     $productImg = $crawler4->filter('.tm-marketplace-listing-photos__aspect-ratio');
-                    if($productImg->count() > 0){
-                    $imgWrap = $productImg->attr('style');
+                    if ($productImg->count() > 0) {
+                        $imgWrap = $productImg->attr('style');
                         preg_match('/.*url\("((.*\/)(.*))"\);/', $imgWrap, $matches);
-                        $imgUrl = $matches[1]; 
+                        $imgUrl = $matches[1];
                         $imgName = $matches[3];
                         logger($imgUrl);
                         logger($imgName);

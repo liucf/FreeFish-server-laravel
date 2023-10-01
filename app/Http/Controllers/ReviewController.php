@@ -6,6 +6,13 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Review;
 
+/**
+ * ReviewController class.
+ *
+ * This class extends the base Controller class and is responsible for handling review-related requests.
+ *
+ * @package App\Http\Controllers
+ */
 class ReviewController extends Controller
 {
     /**
@@ -66,6 +73,6 @@ class ReviewController extends Controller
 
     public function byuser($id)
     {
-        return response()->json( Review::with('author:id,name')->where('seller_id' , $id)->latest()->get() );
+        return response()->json(Review::with('author:id,name')->where('seller_id', $id)->latest()->get());
     }
 }

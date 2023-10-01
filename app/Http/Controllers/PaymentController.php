@@ -6,8 +6,20 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+
+/**
+ * Handle the index request.
+ *
+ * This method retrieves the user, payment method ID, amount, product ID, and fill info from the request.
+ * It then attempts to charge the user using the retrieved information.
+ * If the charge is successful, it returns a JSON response with success status and the charge data.
+ * If an exception occurs during the process, it returns a JSON response with failure status and the exception message.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
 class PaymentController extends Controller
 {
+
     public function index()
     {
         try {
